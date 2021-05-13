@@ -1,0 +1,40 @@
+{
+  "name": "the-simple-webservice",
+  "version": "0.1.0",
+  "bin": {
+    "the-simple-webservice": "bin/the-simple-webservice.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "deploy": "cdk deploy '*' --require-approval 'never'"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.103.0",
+    "@types/chai": "^4.2.18",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.3",
+    "aws-cdk": "1.103.0",
+    "chai": "^4.3.4",
+    "esbuild": "^0.11.20",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.6",
+    "ts-node": "^9.1.1",
+    "typescript": "~4.2.4"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "1.103.0",
+    "@aws-cdk/aws-apigatewayv2": "1.103.0",
+    "@aws-cdk/aws-apigatewayv2-integrations": "1.103.0",
+    "@aws-cdk/aws-dynamodb": "1.103.0",
+    "@aws-cdk/aws-lambda": "1.103.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.103.0",
+    "@aws-cdk/core": "1.103.0",
+    "@aws-sdk/client-dynamodb": "^3.15.0",
+    "@aws-sdk/util-dynamodb": "^3.15.0",
+    "@types/aws-lambda": "^8.10.76",
+    "source-map-support": "^0.5.19"
+  }
+}
