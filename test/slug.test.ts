@@ -1,5 +1,4 @@
 import { slugify } from "../lib/create/create-slug"
-import {expect, assert} from "chai";
 
 test('test for hash collisions with random input', () => {
     let output = []
@@ -8,7 +7,7 @@ test('test for hash collisions with random input', () => {
         output.push(slugify(url))
     }
     let duplicates = output.some((el, i) => output.indexOf(el) !== i)
-    expect(duplicates).to.have.lengthOf(0);
+    expect(duplicates).toHaveLength(0);
 })
 
 test('test for hash collisions with same input', () => {
@@ -18,7 +17,7 @@ test('test for hash collisions with same input', () => {
         output.push(slugify(url))
     }
     let duplicates = output.some((el, i) => output.indexOf(el) !== i)
-    expect(duplicates).to.have.lengthOf(0);
+    expect(duplicates).toHaveLength(0);
 })
 
 test('test for invalid URLs', () => {
@@ -27,5 +26,5 @@ test('test for invalid URLs', () => {
 
 test('test for slug length', () => {
     let slug = slugify('https://google.com')
-    expect(slug).to.have.lengthOf(5);
+    expect(slug).toHaveLength(5);
 })
