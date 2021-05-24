@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>URL Shortener</title>
+	<link rel="stylesheet" type="text/css"
+		href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css"> -->
+	<style>
+		html,
+		body {
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container h-100">
+		<div class="row align-items-center h-100">
+			<div class="col-6 mx-auto">
+				<div class="jumbotron">
+					<h2 class="text-center">URL Shortener</h2>
+
+					<div class="row my-3">
+
+						<div class="col-9">
+							<input id="url-input" type="text" class="form-control" placeholder="Paste your URL">
+						</div>
+						<div class="col-2">
+							<button id="submit-button" class="btn btn-primary">Shorten!</button>
+						</div>
+					</div>
+					<div class="row my-3" id="link-container">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script type="text/javascript">
+		$("#submit-button").click(() => {
+
+			$.ajax({
+				type: "POST",
+				url: window.location.protocol + "//" + window.location.hostname + "/create",
+				data: JSON.stringify({ "url": $("#url-input").val() }),
+				contentType: "application/json",
+				dataType: "json",
+				success: (data) => {
+					if (data.error) {
+						$("#link-container").html(`<div class="alert alert-danger" role="alert">${data.error}</div>`)
+					} else {
+						let fullurl = window.location.protocol + "//" + window.location.hostname + "/" + data.slug
+						$("#link-container").html(`<a href="${fullurl}" class="text-center" target="_blank">${fullurl}</a>`)
+					}
+				},
+				error: ({responseJSON}) => {
+					$("#link-container").html(`<div class="alert alert-danger" role="alert">${responseJSON.error}</div>`)
+				},
+			})
+		})
+	</script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+		<script src="js/script.js"></script> -->
+</body>
+
+</html>

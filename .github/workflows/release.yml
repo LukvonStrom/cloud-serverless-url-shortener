@@ -1,0 +1,45 @@
+name: release
+
+# Refer to https://help.github.com/en/articles/workflow-syntax-for-github-actions for documentation on Actions.
+on:
+  release:
+    types:
+      - released
+
+jobs:
+  # Generate a static build artifact for usage in deployments.
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # - name: Validate release tag
+      #   run: |
+      #     # We only want to run on tags looking like refs/tags/v1200.
+      #     echo "Checking tag: $GITHUB_REF"
+      #     [[ "${GITHUB_REF:10:1}" == "v" ]] || exit 1
+      
+      - name: "Build asset"
+        uses: ./.github/actions/build-asset
+      - name: Compress action step
+        uses: master-atul/tar-action@v1.0.2
+        id: compress
+        with:
+          command: c
+          files: |
+            ./dist
+          outPath: build.tar.gz
+      # NOTE: Artifacts are not available across workflows.
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ./
+          if-no-files-found: error
+      - name: Deploy
+        if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RELEASE_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.RELEASE_AWS_REGION }}
+          CI: "true"
+        run: |
+          npm run cdk:deploy

@@ -1,14 +1,6 @@
 # The Simple Webservice
 
-This is an example CDK stack to deploy The Simple Webservice stack described by Jeremy Daly here - https://www.jeremydaly.com/serverless-microservice-patterns-for-aws/#simplewebservice
-
-Most of this code was borrowed from https://www.cdkworkshop.com
-
-This is the most basic of implementations and would have to be hardened before production use. e.g. cognito added to the API Gateway
-
-![Architecture](img/architecture.png)
-
-After deployment you should have a proxy api gateway where any url hits a lambda which inserts a record of the url into a dynamodb with a count of how many times that url has been visited. 
+Inspired by : https://aws.amazon.com/de/blogs/compute/build-a-serverless-private-url-shortener/
 
 ## Useful commands
 

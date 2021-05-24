@@ -1,0 +1,55 @@
+name: ci
+
+# Check out https://help.github.com/en/articles/workflow-syntax-for-github-actions for documentation on Actions.
+on:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "*.*"      
+
+  # Validate our deployment setup by deploying the stack to LocalStack.
+  localstack:
+    runs-on: ubuntu-latest
+    environment:
+      name: local
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: serverless,cloudfront,cloudformation,iam,sts,s3,route53,acm,cloudwatch,cloudwatch-logs,lambda,apigateway
+          DEFAULT_REGION: eu-central-1
+          AWS_ACCESS_KEY_ID: localkey
+          AWS_SECRET_ACCESS_KEY: localsecret
+        ports:
+          - 4566:4566
+          - 4571:4571
+    steps:
+      - name: "Build asset"
+        uses: ./.github/actions/build-asset
+
+      - name: Bootstrapping LocalStack
+        run: |
+          npm run cdklocal:bootstrap
+        env:
+          DEFAULT_REGION: eu-central-1
+          AWS_ACCOUNT_ID: "000000000000"
+          AWS_ACCESS_KEY_ID: localkey
+          AWS_SECRET_ACCESS_KEY: localsecret
+
+      - name: Deploying to LocalStack
+        run: |
+          npm run cdklocal:deploy
+        env:
+          DEFAULT_REGION: eu-central-1
+          AWS_ACCOUNT_ID: "000000000000"
+          AWS_ACCESS_KEY_ID: localkey
+          AWS_SECRET_ACCESS_KEY: localsecret
+      - name: Jest
+        run: |
+          jest
+        env:
+          DEFAULT_REGION: eu-central-1
+          AWS_ACCOUNT_ID: "000000000000"
+          AWS_ACCESS_KEY_ID: localkey
+          AWS_SECRET_ACCESS_KEY: localsecret
