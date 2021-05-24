@@ -1,6 +1,5 @@
 name: ci
 
-# Check out https://help.github.com/en/articles/workflow-syntax-for-github-actions for documentation on Actions.
 on:
   push:
     branches:
@@ -8,7 +7,7 @@ on:
     tags-ignore:
       - "*.*"      
 
-  # Validate our deployment setup by deploying the stack to LocalStack.
+jobs:
   localstack:
     runs-on: ubuntu-latest
     environment:
