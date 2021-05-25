@@ -8,19 +8,19 @@ on:
       - "*.*"      
 
 jobs:
-  localstack:
-    runs-on: ubuntu-latest
-    services:
-      localstack:
-        image: localstack/localstack:latest
-        env:
-          SERVICES: serverless,cloudfront,cloudformation,iam,sts,s3,route53,acm,cloudwatch,cloudwatch-logs,lambda,apigateway
-          DEFAULT_REGION: eu-central-1
-          AWS_ACCESS_KEY_ID: localkey
-          AWS_SECRET_ACCESS_KEY: localsecret
-        ports:
-          - 4566:4566
-          - 4571:4571
+  # localstack:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     localstack:
+  #       image: localstack/localstack:latest
+  #       env:
+  #         SERVICES: serverless,cloudfront,cloudformation,iam,sts,s3,route53,acm,cloudwatch,cloudwatch-logs,lambda,apigateway
+  #         DEFAULT_REGION: eu-central-1
+  #         AWS_ACCESS_KEY_ID: localkey
+  #         AWS_SECRET_ACCESS_KEY: localsecret
+  #       ports:
+  #         - 4566:4566
+  #         - 4571:4571
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js 14.12.0
