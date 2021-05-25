@@ -28,9 +28,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.12.0"
-      - name: Upgrade NPM to 6.14.8
-        run: |
-          npm i -g npm@6.14.8
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -39,6 +36,7 @@ jobs:
             node-
       - name: "Install dependencies"
         run: |
+          ls -la
           npm ci
       - name: "Build asset"
         run: |
