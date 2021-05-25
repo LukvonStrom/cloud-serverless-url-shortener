@@ -6,7 +6,6 @@ let slug: Slug;
 beforeAll(() => {
     let s3Client = new S3Client({
         region: 'eu-central-1',
-        endpoint: 'http://localhost:4575',
     })
     slug = new Slug(s3Client, 'test')
 })
