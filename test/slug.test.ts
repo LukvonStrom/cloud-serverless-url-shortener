@@ -1,13 +1,15 @@
 import { S3Client } from "@aws-sdk/client-s3";
+import { join } from "path";
 import {Slug} from "../lib/create-slug"
-
+const {readFile} = require('fs/promises')
 let slug: Slug;
 
-beforeAll(() => {
+beforeAll(async () => {
     let s3Client = new S3Client({
         region: 'eu-central-1',
     })
-    slug = new Slug(s3Client, 'test')
+    let bucket = (await readFile(join(__dirname, '../../bucket-name.txt'))).toString();
+    slug = new Slug(s3Client, bucket)
 })
 
 test('test for hash collisions with random input', async () => {
@@ -32,12 +34,12 @@ test('test for hash collisions with same input', async () => {
 })
 
 test('test for invalid URLs', async () => {
-    expect(() => Slug.isValidUrl("protocol://wrong/uri")).toBeFalsy()
-    expect(() => Slug.isValidUrl("https://wrong/uri")).toBeFalsy()
-    expect(() => Slug.isValidUrl("http://wrong/uri")).toBeFalsy()
+    expect(Slug.isValidUrl("protocol://wrong/uri")).toBeFalsy()
+    expect(Slug.isValidUrl("https://wrong/uri")).toBeFalsy()
+    expect(Slug.isValidUrl("http://wrong/uri")).toBeFalsy()
     // TLDs change to frequently to validate them properly
-    expect(() => Slug.isValidUrl("http://wrong.uri")).toBeTruthy()
-    expect(() => Slug.isValidUrl("https://wrong.uri")).toBeTruthy()
+    expect(Slug.isValidUrl("http://wrong.uri")).toBeTruthy()
+    expect(Slug.isValidUrl("https://wrong.uri")).toBeTruthy()
 })
 
 test('test for slug length', async () => {

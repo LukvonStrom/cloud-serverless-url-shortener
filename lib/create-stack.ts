@@ -7,7 +7,7 @@ import { join } from 'path';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { CodeSigningConfig } from '@aws-cdk/aws-lambda';
 import { Platform, SigningProfile } from '@aws-cdk/aws-signer';
-import { CloudFrontWebDistribution, Distribution } from '@aws-cdk/aws-cloudfront';
+import { writeFile } from 'fs';
 
 
 
@@ -108,6 +108,14 @@ export class ShortenerStack extends Stack {
       new CfnOutput(this, 'HTTP-API', {
         value: api.url ?? 'Something went wrong with the deployment'
       });
+
+      new CfnOutput(this, 'S3-Bucket', {
+        value: myBucket.bucketName ?? 'Something went wrong with the deployment'
+      })
+
+      writeFile(join(__dirname, '../../bucket-name.txt'), myBucket.bucketName, () => {
+        console.log("wrote it")
+      })
     }
   }
 
