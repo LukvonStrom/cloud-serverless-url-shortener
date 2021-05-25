@@ -8,8 +8,8 @@ on:
       - "*.*"      
 
 jobs:
-  # localstack:
-  #   runs-on: ubuntu-latest
+  localstack:
+    runs-on: ubuntu-latest
   #   services:
   #     localstack:
   #       image: localstack/localstack:latest
