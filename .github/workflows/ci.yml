@@ -22,14 +22,14 @@ jobs:
           - 4566:4566
           - 4571:4571
     steps:
+      - uses: actions/checkout@v2
       - name: Setup Node.js 14.12.0
         uses: actions/setup-node@v1
         with:
           node-version: "14.12.0"
       - name: "Install dependencies"
         run: |
-          cd /home/runner/work/cloud-serverless-url-shortener
-          ls -la
+
           npm ci
       - name: "Build asset"
         run: |
@@ -40,7 +40,7 @@ jobs:
         with:
           command: c
           files: |
-            /home/runner/work/cloud-serverless-url-shortener/dist
+            ./dist
           outPath: build.tar.gz
       - uses: actions/upload-artifact@v2
         with:
