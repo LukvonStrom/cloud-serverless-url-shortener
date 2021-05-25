@@ -1,8 +1,8 @@
 {
-  "name": "the-simple-webservice",
+  "name": "shortener",
   "version": "0.1.0",
   "bin": {
-    "the-simple-webservice": "bin/the-simple-webservice.js"
+    "shortener": "bin/shortener.js"
   },
   "scripts": {
     "build": "tsc",
