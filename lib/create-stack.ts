@@ -8,6 +8,7 @@ import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { CodeSigningConfig } from '@aws-cdk/aws-lambda';
 import { Platform, SigningProfile } from '@aws-cdk/aws-signer';
 import { writeFile } from 'fs';
+import { cwd } from 'process';
 
 
 
@@ -113,8 +114,8 @@ export class ShortenerStack extends Stack {
         value: myBucket.bucketName ?? 'Something went wrong with the deployment'
       })
 
-      writeFile(join(__dirname, '../../bucket-name.txt'), myBucket.bucketName, () => {
-        console.log("wrote it")
+      writeFile(join(cwd(), 'bucket-name.txt'), myBucket.bucketName, () => {
+        console.log("wrote it", join(__dirname, '../../bucket-name.txt'))
       })
     }
   }

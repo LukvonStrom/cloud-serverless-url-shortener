@@ -1,5 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { join } from "path";
+import { cwd } from "process";
 import {Slug} from "../lib/create-slug"
 const {readFile} = require('fs/promises')
 let slug: Slug;
@@ -8,7 +9,7 @@ beforeAll(async () => {
     let s3Client = new S3Client({
         region: 'eu-central-1',
     })
-    let bucket = (await readFile(join(__dirname, '../../bucket-name.txt'))).toString();
+    let bucket = (await readFile(join(cwd(), 'bucket-name.txt'))).toString();
     slug = new Slug(s3Client, bucket)
 })
 
