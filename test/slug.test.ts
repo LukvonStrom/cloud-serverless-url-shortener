@@ -6,12 +6,13 @@ import {Slug} from "../lib/create-slug"
 const {readFile} = require('fs/promises')
 let slug: Slug;
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
     let s3Client = new S3Client({
         region: 'eu-central-1',
     })
    
-    
     let command = new DescribeStacksCommand({StackName: "ShortenerStack"});
     let {Stacks} = await new CloudFormationClient({region: 'eu-central-1'}).send(command);
     if(Stacks){
