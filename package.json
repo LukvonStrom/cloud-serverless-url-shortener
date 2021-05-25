@@ -12,7 +12,7 @@
     "deploy": "cdk deploy '*' --require-approval 'never'",
     "cdk:synth": "cdk synth",
     "cdk:diff": "cdk diff",
-    "cdk:deploy": "[[ $CI == 'true' ]] && export CDK_APPROVAL='never' || export CDK_APPROVAL='broadening'; cdk deploy --require-approval $CDK_APPROVAL '*'",
+    "cdk:deploy": "export CDK_APPROVAL='never'; cdk deploy --require-approval $CDK_APPROVAL '*'",
     "cdk:bootstrap": "cdk bootstrap aws://$(aws sts get-caller-identity | jq -r .Account)/$AWS_REGION",
     "cdklocal:start": "docker-compose up",
     "cdklocal:clear-cache": "(rm ~/.cdk/cache/accounts.json || true) && (rm ~/.cdk/cache/accounts_partitions.json || true)",
