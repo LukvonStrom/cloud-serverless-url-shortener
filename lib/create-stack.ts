@@ -110,12 +110,8 @@ export class ShortenerStack extends Stack {
         value: api.url ?? 'Something went wrong with the deployment'
       });
 
-      new CfnOutput(this, 'S3-Bucket', {
+      new CfnOutput(this, 'S3-Website-Bucket', {
         value: myBucket.bucketName ?? 'Something went wrong with the deployment'
-      })
-
-      writeFile(join(cwd(), 'bucket-name.txt'), myBucket.bucketName, () => {
-        console.log("wrote it", join(__dirname, '../../bucket-name.txt'))
       })
     }
   }
