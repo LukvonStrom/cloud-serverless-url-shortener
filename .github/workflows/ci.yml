@@ -10,8 +10,6 @@ on:
 jobs:
   localstack:
     runs-on: ubuntu-latest
-    environment:
-      name: local
     services:
       localstack:
         image: localstack/localstack:latest
@@ -28,14 +26,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.12.0"
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            node-
       - name: "Install dependencies"
         run: |
+          cd /home/runner/work/cloud-serverless-url-shortener
           ls -la
           npm ci
       - name: "Build asset"
@@ -47,7 +40,7 @@ jobs:
         with:
           command: c
           files: |
-            ./dist
+            /home/runner/work/cloud-serverless-url-shortener/dist
           outPath: build.tar.gz
       - uses: actions/upload-artifact@v2
         with:
