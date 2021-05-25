@@ -23,6 +23,7 @@ jobs:
       - name: "Build asset"
         run: |
           npm run build
+          mkdir -p dist/lib/website
           cp lib/website/index.html dist/lib/website/index.html
       - name: Compress action step
         uses: master-atul/tar-action@v1.0.2
