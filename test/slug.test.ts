@@ -1,4 +1,4 @@
-import { CloudFormationClient, ListExportsCommand } from "@aws-sdk/client-cloudformation";
+import { CloudFormationClient, DescribeStacksCommand, ListExportsCommand } from "@aws-sdk/client-cloudformation";
 import { S3Client } from "@aws-sdk/client-s3";
 import { join } from "path";
 import { cwd } from "process";
@@ -10,15 +10,18 @@ beforeAll(async () => {
     let s3Client = new S3Client({
         region: 'eu-central-1',
     })
-    let command = new ListExportsCommand({});
-    let {Exports} = await new CloudFormationClient({region: 'eu-central-1'}).send(command);
-    let bucket = Exports?.filter(el => el.Name === "S3-Website-Bucket")[0]
-    if(!bucket || !bucket.Value){
-        throw new Error("Infrastructure mess up")
-    }else{
-        slug = new Slug(s3Client, bucket.Value)
-    }
+   
     
+    let command = new DescribeStacksCommand({StackName: "ShortenerStack"});
+    let {Stacks} = await new CloudFormationClient({region: 'eu-central-1'}).send(command);
+    if(Stacks){
+        let output = (Stacks[0].Outputs?.filter(el => el.OutputKey === "S3WebsiteBucket"))
+    if(output && output[0] && output[0].OutputValue && output[0].OutputKey ){
+        slug = new Slug(s3Client, output[0].OutputValue)
+    }
+    }else{
+        throw new Error("Infrastructure mess up") 
+    }
 })
 
 test('test for hash collisions with random input', async () => {
