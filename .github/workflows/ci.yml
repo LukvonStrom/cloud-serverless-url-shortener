@@ -49,28 +49,36 @@ jobs:
           path: ./build.tar.gz
           if-no-files-found: error
 
-      - name: Bootstrapping LocalStack
-        run: |
-          npm run cdklocal:bootstrap
-        env:
-          DEFAULT_REGION: eu-central-1
-          AWS_ACCOUNT_ID: "000000000000"
-          AWS_ACCESS_KEY_ID: localkey
-          AWS_SECRET_ACCESS_KEY: localsecret
+      # - name: Bootstrapping LocalStack
+      #   run: |
+      #     npm run cdklocal:bootstrap
+      #   env:
+      #     DEFAULT_REGION: eu-central-1
+      #     AWS_ACCOUNT_ID: "000000000000"
+      #     AWS_ACCESS_KEY_ID: localkey
+      #     AWS_SECRET_ACCESS_KEY: localsecret
 
-      - name: Deploying to LocalStack
-        run: |
-          npm run cdklocal:deploy
+      # - name: Deploying to LocalStack
+      #   run: |
+      #     npm run cdklocal:deploy
+      #   env:
+      #     DEFAULT_REGION: eu-central-1
+      #     AWS_ACCOUNT_ID: "000000000000"
+      #     AWS_ACCESS_KEY_ID: localkey
+      #     AWS_SECRET_ACCESS_KEY: localsecret
+      - name: Deploy
+        if: env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY
         env:
-          DEFAULT_REGION: eu-central-1
-          AWS_ACCOUNT_ID: "000000000000"
-          AWS_ACCESS_KEY_ID: localkey
-          AWS_SECRET_ACCESS_KEY: localsecret
+          AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RELEASE_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.RELEASE_AWS_REGION }}
+          CI: "true"
+        run: |
+          npm run cdk:deploy
       - name: Jest
         run: |
           jest
         env:
-          DEFAULT_REGION: eu-central-1
-          AWS_ACCOUNT_ID: "000000000000"
-          AWS_ACCESS_KEY_ID: localkey
-          AWS_SECRET_ACCESS_KEY: localsecret
+          AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.RELEASE_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.RELEASE_AWS_REGION }}
