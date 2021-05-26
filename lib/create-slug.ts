@@ -12,6 +12,15 @@ export class Slug {
         this.bucket = bucket;
     }
 
+    private shuffleSlug = async (): Promise<string> => {
+        let _slug = "12345".split("").map(el => this.alphabet[randomInt(this.alphabet.length)]).join("")
+        if(await this.hasSlug(_slug)){
+            return await this.shuffleSlug();
+        }else{
+            return _slug;
+        }
+    }
+
     /**
      * 
      * @param url 
@@ -20,22 +29,25 @@ export class Slug {
      */
     async createSlug(url: string){
 
-        let shuffleSlug = async (): Promise<string> => {
-            let _slug = "12345".split("").map(el => this.alphabet[randomInt(this.alphabet.length)]).join("")
-            if(await this.hasSlug(_slug)){
-                return await shuffleSlug();
-            }else{
-                return _slug;
-            }
-        }
-
-        const slug = await shuffleSlug();
+        const slug = await this.shuffleSlug();
         const createCommand = new PutObjectCommand({Bucket: this.bucket, WebsiteRedirectLocation: url, Key: slug});
 
         // No try-catch here, because error should be non-retriable (i.e. insufficient perms, etc.)
         await this.s3Client.send(createCommand);
 
         return slug;
+    }
+
+    async createSlugsBulk(urls: string[]): Promise<string[]>{
+
+        return await Promise.all(urls.map(async (url) => {
+            const slug = await this.shuffleSlug()
+            const createCommand = new PutObjectCommand({Bucket: this.bucket, WebsiteRedirectLocation: url, Key: slug});
+
+            await this.s3Client.send(createCommand);
+            return slug;
+        }))
+
     }
 
     private async hasSlug(slug: string): Promise<boolean> {
@@ -63,7 +75,7 @@ export class Slug {
     public static isValidUrl(urlLike: string): boolean {
         try {
             let url = new URL(urlLike);
-            return url.protocol === "http:" || url.protocol === "https:"
+            return url.hostname.includes('.') && (url.protocol === "http:" || url.protocol === "https:")
         } catch (e) {
             return false;
         }

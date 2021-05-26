@@ -1,71 +1,40 @@
 
 import { expect as expectCDK, matchTemplate, haveResourceLike, MatchStyle } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
-import {ShortenerStack} from '../lib/create-stack'
+import { ShortenerStack } from '../lib/create-stack'
 
-/*
-test('DynamoDB Created', () => {
+describe('Test Infrastructure Integrity', function () {
+  test('S3 Created', () => {
     const app = new cdk.App();
     // WHEN
-    const stack = new TheSimpleWebservice.TheSimpleWebserviceStack(app, 'MyTestStack');
+    const stack = new ShortenerStack(app, 'MyTestStack');
     // THEN
-  expectCDK(stack).to(haveResourceLike("AWS::DynamoDB::Table", {
-    "KeySchema": [
-      {
-        "AttributeName": "path",
-        "KeyType": "HASH"
-      }
-    ]}
-  ));
-});
+    expectCDK(stack).to(haveResourceLike("AWS::S3::Bucket"));
+  })
 
-test('DynamoDB Read/Write IAM Policy Created', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new TheSimpleWebservice.TheSimpleWebserviceStack(app, 'MyTestStack');
-  // THEN
-  expectCDK(stack).to(haveResourceLike("AWS::IAM::Policy", {
-    "PolicyDocument": {
-      "Statement": [
-        {
-        "Action": [
-          "dynamodb:BatchGetItem",
-          "dynamodb:GetRecords",
-          "dynamodb:GetShardIterator",
-          "dynamodb:Query",
-          "dynamodb:GetItem",
-          "dynamodb:Scan",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem"
-        ],
-        "Effect": "Allow"  
-      }]
+
+  test('Lambda Created', () => {
+    const app = new cdk.App();
+    // WHEN
+    const stack = new ShortenerStack(app, 'MyTestStack');
+    // THEN
+    expectCDK(stack).to(haveResourceLike("AWS::Lambda::Function", {
+      "Handler": "index.handler",
+      "Runtime": "nodejs12.x"
     }
-  }
-  ));
-});
+    ));
+  });
 
-test('DynamoDB Lambda Created', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new TheSimpleWebservice.TheSimpleWebserviceStack(app, 'MyTestStack');
-  // THEN
-  expectCDK(stack).to(haveResourceLike("AWS::Lambda::Function", {
-    "Handler": "lambda.handler",
-    "Runtime": "nodejs12.x"
-  }
-  ));
-});*/
+  test('API Gateway Http API Created', () => {
+    const app = new cdk.App();
+    // WHEN
+    const stack = new ShortenerStack(app, 'MyTestStack');
+    // THEN
+    expectCDK(stack).to(haveResourceLike("AWS::ApiGatewayV2::Api", {
+      "ProtocolType": "HTTP"
+    }
+    ));
+  });
 
-test('API Gateway Http API Created', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new ShortenerStack(app, 'MyTestStack');
-  // THEN
-  expectCDK(stack).to(haveResourceLike("AWS::ApiGatewayV2::Api", {
-    "ProtocolType": "HTTP"
-  }
-  ));
-});
+
+})

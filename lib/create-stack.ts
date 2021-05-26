@@ -7,8 +7,6 @@ import { join } from 'path';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
 import { CodeSigningConfig } from '@aws-cdk/aws-lambda';
 import { Platform, SigningProfile } from '@aws-cdk/aws-signer';
-import { writeFile } from 'fs';
-import { cwd } from 'process';
 
 
 

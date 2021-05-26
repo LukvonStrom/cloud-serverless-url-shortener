@@ -33,8 +33,6 @@ jobs:
       - name: "Build asset"
         run: |
           npm run build
-          mkdir -p dist/lib/website
-          cp lib/website/index.html dist/lib/website/index.html
       - name: Compress action step
         uses: master-atul/tar-action@v1.0.2
         id: compress
@@ -77,8 +75,13 @@ jobs:
           npm run cdk:deploy
       - name: Jest
         run: |
-          npm run test
+          npm run testci
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.RELEASE_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.RELEASE_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.RELEASE_AWS_REGION }}
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: artifacts/**/*.xml
