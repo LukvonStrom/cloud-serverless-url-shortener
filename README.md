@@ -36,17 +36,20 @@ He envisions the following architecture in his post:
 
 He builds out his architecture with a CloudFront CDN in front of both the required S3 Bucket.
 
+--- 
+
 Hadingers architecture was the starting point of this implementation, which follows a AWS CDK approach to deploying the required assets. Aditionally the CloudFront distribution was scrapped, in favor of the Amazon API Gateway HTTP API, which redirects the requests to S3. To serve the website, the error handler of the S3 Webserver was utilized. As there are only objects with 5 digits present, inputing any other character will lead to an internal S3 exception. By serving the `index.html` site as an error page, it will be shown any time, no redirect is performed (See also: https://stackoverflow.com/a/20273548).
 The HTML page is really plain with only some JQuery code to perform the network request (If this were a frontend project I would've used react). 
 ![./webinterface.png](./webinterface.png)    
 The webinterface is proven to work with Chrome and Chromium Edge.
 
-These decisions result in the following architecture:
+These decisions result in the following architecture:    
+
 ![./final-architecture.png](./final-architecture.png)
 
-The infrastructure is described in its own AWS CDK stack at `bin/shortener.ts` and [`lib/create-stack.ts`](../blob/master/lib/create-stack.ts). The lambda function is implemented as a Node.js function, which is packaged by esbuild. It resides in [`lib/create-stack.create-handler.ts`](../blob/master/lib/create-stack.create-handler.ts). The "Create" Logic resides in the `Slug` class in [`lib/create-slug.ts`](../blob/master/lib/create-slug.ts). The HTML is located in [`lib/website/index.html`](../blob/master/lib/website/index.html). 
+The infrastructure is described in its own AWS CDK stack at [`bin/shortener.ts`](../master/bin/shortener.ts) and [`lib/create-stack.ts`](../master/lib/create-stack.ts). The lambda function is implemented as a Node.js function, which is packaged by esbuild. It resides in [`lib/create-stack.create-handler.ts`](../master/lib/create-stack.create-handler.ts). The "Create" Logic resides in the `Slug` class in [`lib/create-slug.ts`](../master/lib/create-slug.ts). The HTML is located in [`lib/website/index.html`](../master/lib/website/index.html). 
 
-To perform CI/CD, Github Actions is used. The corresponding `yaml` file is located at [`.github/workflows/ci.yml`](../blob/master/.github/workflows/ci.yml) As the whole code depends on S3 for functionality, the CDK stack is deployed to a live AWS environment via Github and then the tests are performed. The `jest` test results are submitted in the junit format to Github for nicer display. This deviation from "unit testing" in itself towards a "integration testing" approach was approved by the lecturer.
+To perform CI/CD, Github Actions is used. The corresponding `yaml` file is located at [`.github/workflows/ci.yml`](../master/.github/workflows/ci.yml) As the whole code depends on S3 for functionality, the CDK stack is deployed to a live AWS environment via Github and then the tests are performed. The `jest` test results are submitted in the junit format to Github for nicer display. This deviation from "unit testing" in itself towards a "integration testing" approach was approved by the lecturer.
 
 ## Useful commands
 
