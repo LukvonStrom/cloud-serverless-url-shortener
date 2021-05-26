@@ -37,6 +37,9 @@ He envisions the following architecture in his post:
 He builds out his architecture with a CloudFront CDN in front of both the required S3 Bucket.
 
 Hadingers architecture was the starting point of this implementation, which follows a AWS CDK approach to deploying the required assets. Aditionally the CloudFront distribution was scrapped, in favor of the Amazon API Gateway HTTP API, which redirects the requests to S3. To serve the website, the error handler of the S3 Webserver was utilized. As there are only objects with 5 digits present, inputing any other character will lead to an internal S3 exception. By serving the `index.html` site as an error page, it will be shown any time, no redirect is performed (See also: https://stackoverflow.com/a/20273548).
+The HTML page is really plain with only some JQuery code to perform the network request (If this were a frontend project I would've used react). 
+![./webinterface.png](./webinterface.png)    
+The webinterface is proven to work with Chrome and Chromium Edge.
 
 These decisions result in the following architecture:
 ![./final-architecture.png](./final-architecture.png)
@@ -47,11 +50,21 @@ To perform CI/CD, Github Actions is used. The corresponding `yaml` file is locat
 
 ## Useful commands
 
- * `npm run build`  compile typescript to js (nescessary to execute it with node.js)
- * `npm run test`   perform the jest unit tests (only after building)
- * `npm run deploy` deploy this stack to your default AWS account/region (only after building)
- * `npm run cdk:diff`   compare deployed stack with current state
- * `npm run cdk:synth`  emits the synthesized CloudFormation template
+ * `npm run build`    
+ compile typescript to js (nescessary to execute it with node.js)
+ * `npm run test`    
+ perform the jest unit tests (only after building)
+ * `npm run cdk:bootstrap`    
+ When deploying to the AWS account for the first time, use this command first. Otherwise this error appears: ```❌ ShortenerStack failed: Error: This stack uses assets, so the toolkit stack must be deployed to the environment (Run "cdk bootstrap aws://unknown-account/unknown-region")```
+ * `npm run deploy`    
+ deploy this stack to your default AWS account/region (only after building)
+ * `npm run cdk:diff`    
+ compare deployed stack with current state
+ * `npm run cdk:synth`    
+ emits the synthesized CloudFormation template
+
+ ## Prod environment:
+ The productive environment, wo which the CICD pipeline points is hosted at: [https://ixuxezz71d.execute-api.eu-central-1.amazonaws.com/](https://ixuxezz71d.execute-api.eu-central-1.amazonaws.com/)
 
  ## Generated Architecture Image
  Below you'll find an automagically generated architecture image, which is generated from the whole CDK stack.
@@ -60,4 +73,4 @@ To perform CI/CD, Github Actions is used. The corresponding `yaml` file is locat
 
 
 ## Sources
-**Hadinger, S. (2016):** Build a Serverless, Private URL Shortener, https://aws.amazon.com/de/blogs/compute/build-a-serverless-private-url-shortener/, Retrieved: 26.05.2021
+**Hadinger, S. (2016):** Build a Serverless, Private URL Shortener, [https://aws.amazon.com/de/blogs/compute/build-a-serverless-private-url-shortener/](https://aws.amazon.com/de/blogs/compute/build-a-serverless-private-url-shortener/), Retrieved: 26.05.2021
