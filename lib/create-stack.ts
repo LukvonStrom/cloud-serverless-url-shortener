@@ -98,11 +98,11 @@ export class ShortenerStack extends Stack {
 
       const createIntegration = new LambdaProxyIntegration({ handler: createLambda })
       const redirectIntegration = new HttpProxyIntegration({ url: myBucket.bucketWebsiteUrl + "/{id}" });
-      const adminIntegration = new HttpProxyIntegration({ url: myBucket.bucketWebsiteUrl + "/admin/{documents}" });
+      // const adminIntegration = new HttpProxyIntegration({ url: myBucket.bucketWebsiteUrl + "/admin/{documents}" });
 
       api.addRoutes({ path: '/create', methods: [HttpMethod.POST], integration: createIntegration })
       api.addRoutes({ path: '/{id}', methods: [HttpMethod.GET, HttpMethod.OPTIONS], integration: redirectIntegration })
-      api.addRoutes({ path: '/admin/{documents+}', methods: [HttpMethod.GET, HttpMethod.OPTIONS], integration: adminIntegration })
+      //api.addRoutes({ path: '/admin/{documents+}', methods: [HttpMethod.GET, HttpMethod.OPTIONS], integration: adminIntegration })
 
       new CfnOutput(this, 'HTTP-API', {
         value: api.url ?? 'Something went wrong with the deployment'
