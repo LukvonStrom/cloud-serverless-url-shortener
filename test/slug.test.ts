@@ -73,6 +73,8 @@ describe('Test Slug Functionality', function () {
         // TLDs change to frequently to validate them properly
         expect(Slug.isValidUrl("http://wrong.uri")).toBeTruthy()
         expect(Slug.isValidUrl("https://wrong.uri")).toBeTruthy()
+        expect(Slug.isValidUrl("wrong.uri")).toBeTruthy()
+        expect(Slug.isValidUrl("://wrong.uri")).toBeTruthy()
     }, timeout)
 
 
