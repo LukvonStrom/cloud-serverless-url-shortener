@@ -38,7 +38,10 @@ He builds out his architecture with a CloudFront CDN in front of both the requir
 
 --- 
 
-Hadingers architecture was the starting point of this implementation, which follows a AWS CDK approach to deploying the required assets. Aditionally the CloudFront distribution was scrapped, in favor of the Amazon API Gateway HTTP API, which redirects the requests to S3. To serve the website, the error handler of the S3 Webserver was utilized. As there are only objects with 5 digits present, inputing any other character will lead to an internal S3 exception. By serving the `index.html` site as an error page, it will be shown any time, no redirect is performed (See also: https://stackoverflow.com/a/20273548).
+Hadingers architecture was the starting point of this implementation, which follows a AWS CDK approach to deploying the required assets. Aditionally the CloudFront distribution was scrapped, in favor of the Amazon API Gateway HTTP API, which redirects the requests to S3. To serve the website, the error handler of the S3 Webserver was utilized. As there are only objects with 5 digits present, inputing any other character will lead to an internal S3 exception. By serving the `index.html` site as an error page, it will be shown any time, no redirect is performed (See also: https://stackoverflow.com/a/20273548). The validity of URLs is determined by its structural conformance to RFC 3986 and the EcmaScript `URL` Class. Aditionally it is determined, wether the domains is resolvable via DNS. This mitigates a scenario, where an attacker would send a victim a shortened url that resolves to a corporate address for instance (think intranet or other sensitive areas). 
+
+If this should be enabled, the Lambda can be attached to a Site-to-Site VPN and then resolve DNS queries via an onsite DNS resolver.
+
 The HTML page is really plain with only some JQuery code to perform the network request (If this were a frontend project I would've used react). 
 ![./webinterface.png](./webinterface.png)    
 The webinterface is proven to work with Chrome and Chromium Edge.

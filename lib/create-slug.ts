@@ -1,6 +1,8 @@
 import { S3Client, HeadObjectCommand, GetObjectCommand, GetObjectCommandOutput, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomInt } from "crypto";
+const { resolve } = require("dns").promises;
 import { URL } from "url";
+const {isWebUri} = require('valid-url')
 
 export class Slug {
     private alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("")
@@ -61,31 +63,56 @@ export class Slug {
         }
 
     }
-    /**
-     * 
-     * @param slug 
-     * @returns GetObjectCommandOutput
-     * @throws Error in case the object is not found
-     */
-    private async getSlug(slug: string): Promise<GetObjectCommandOutput> {
-        const getCommand = new GetObjectCommand({ Bucket: this.bucket, Key: slug })
-        return await this.s3Client.send(getCommand);
+
+    private static parseUrl(urlLike: string): {status: boolean, url?: URL} {
+        try{
+            let url = new URL(urlLike);
+            return {status: true, url};
+        }catch(e){
+            return {status: false};
+        }
     }
 
-    public static isValidUrl(urlLike: string): boolean {
+    public static async isValidUrl(urlLike: string): Promise<boolean> {
         try {
-            let url = new URL(urlLike);
-            let matchTld = (str: string) => {
-                let matches = str.match(/^\.\w+(\.\w+)*$/g);
-                return !!str && !!matches && matches.length > 0;
-            }
-            if (!url.protocol) {
-                return matchTld(url.pathname);
+            let url = Slug.parseUrl(urlLike);
+            let matchTld = async (str: string) => {
 
-            } else {
-                if (url.protocol === "http:" || url.protocol === "https:") {
-                    return matchTld(url.hostname);
+                let countOfPoints = (str.match(new RegExp(/\./, "g")) || []).length
+
+                // a domain has either [].com or [].co.uk or www.[].co.uk
+                if(0 < countOfPoints &&  countOfPoints < 4){
+                    // The domain name system allows various tricky usecases like unicode in the domain name
+                    // I am not able to cover all valid instances via Regex
+                    // So I perform a DNS resolve.
+                    
+                    let result = await resolve(str)
+                    return result.length > 0;
+                    
                 }
+                return false;
+            }
+            if(!url.status){
+                // This is considered valid by some browsers
+                if(urlLike.includes("://")){
+                    return await matchTld(urlLike.replace("://", ""));
+                }
+                if(urlLike.includes("//")){
+                    return await matchTld(urlLike.replace("//", ""));
+                }
+                return await matchTld(urlLike);
+            }else if(url.url){
+                if (!url.url.protocol) {
+                    console.log("No protocol")
+                    return await matchTld(url.url.pathname);
+    
+                } else {
+                    if (url.url.protocol === "http:" || url.url.protocol === "https:") {
+                        return !!isWebUri(urlLike) && await matchTld(url.url.hostname)
+                    }
+                }
+            }else{
+                return false;
             }
 
             return false;

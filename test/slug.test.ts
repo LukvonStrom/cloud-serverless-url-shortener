@@ -6,8 +6,6 @@ const { NodeHttpHandler } = require("@aws-sdk/node-http-handler");
 
 
 describe('Test Slug Functionality', function () {
-    //jest.setTimeout(30000);
-    // jest.setTimeout(5000);
 
     let timeout = 50000
 
@@ -67,14 +65,23 @@ describe('Test Slug Functionality', function () {
     }, timeout)
 
     test('test for invalid URLs', async () => {
-        expect(Slug.isValidUrl("protocol://wrong/uri")).toBeFalsy()
-        expect(Slug.isValidUrl("https://wrong/uri")).toBeFalsy()
-        expect(Slug.isValidUrl("http://wrong/uri")).toBeFalsy()
-        // TLDs change to frequently to validate them properly
-        expect(Slug.isValidUrl("http://wrong.uri")).toBeTruthy()
-        expect(Slug.isValidUrl("https://wrong.uri")).toBeTruthy()
-        expect(Slug.isValidUrl("wrong.uri")).toBeTruthy()
-        expect(Slug.isValidUrl("://wrong.uri")).toBeTruthy()
+        expect(await Slug.isValidUrl("protocol://wrong/uri")).toBeFalsy()
+        expect(await Slug.isValidUrl("https://wrong/uri")).toBeFalsy()
+        expect(await Slug.isValidUrl("http://wrong/uri")).toBeFalsy()
+        // Non resolvable TLDs
+        expect(await Slug.isValidUrl("http://wrong.uri")).toBeFalsy()
+        expect(await Slug.isValidUrl("https://wrong.uri")).toBeFalsy()
+        expect(await Slug.isValidUrl("wrong.uri")).toBeFalsy()
+        expect(await Slug.isValidUrl("://wrong.uri")).toBeFalsy()
+        // Resolvable TLDs
+        expect(await Slug.isValidUrl("http://fruntke.tech")).toBeTruthy()
+        expect(await Slug.isValidUrl("https://fruntke.tech")).toBeTruthy()
+        expect(await Slug.isValidUrl("https://www.fruntke.tech")).toBeTruthy()
+        expect(await Slug.isValidUrl("https://google.de")).toBeTruthy()
+        expect(await Slug.isValidUrl("https://www.google.de")).toBeTruthy()
+        expect(await Slug.isValidUrl("https://www.google.de/path")).toBeTruthy()
+        expect(await Slug.isValidUrl("golem.de")).toBeTruthy()
+        expect(await Slug.isValidUrl("://golem.de")).toBeTruthy()
     }, timeout)
 
 

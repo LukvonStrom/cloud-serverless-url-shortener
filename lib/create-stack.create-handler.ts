@@ -17,7 +17,9 @@ exports.handler = async function (event: APIGatewayProxyEventV2, context: Contex
 
       console.log(url, targetUrl, event.body)
 
-      if(!Slug.isValidUrl(url)) return sendRes(500, JSON.stringify({ error: "Invalid request, malformed Url" }));
+      let validUrl: boolean = await Slug.isValidUrl(url)
+
+      if (!validUrl) return sendRes(500, JSON.stringify({ error: "Invalid request, malformed Url" }));
 
       try {
         let generatedSlug: string = await slug.createSlug(targetUrl)
