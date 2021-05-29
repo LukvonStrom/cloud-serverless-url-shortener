@@ -34,7 +34,7 @@ He envisions the following architecture in his post:
 
 [![ci](https://awscomputeblogimages.s3-us-west-2.amazonaws.com/urlshortener_diagram.png)](https://awscomputeblogimages.s3-us-west-2.amazonaws.com/urlshortener_diagram.png)
 
-He builds out his architecture with a CloudFront CDN in front of both the required S3 Bucket.
+He builds out his architecture with a CloudFront CDN in front of both the required S3 Bucket and the Lambda/API Gateway.
 
 --- 
 
@@ -42,7 +42,8 @@ Hadingers architecture was the starting point of this implementation, which foll
 
 If this should be enabled, the Lambda can be attached to a Site-to-Site VPN and then resolve DNS queries via an onsite DNS resolver.
 
-The HTML page is really plain with only some JQuery code to perform the network request (If this were a frontend project I would've used react). 
+The HTML page is really plain with only some JQuery code to perform the network request (If this were a frontend project I would've used react).    
+
 ![./webinterface.png](./webinterface.png)    
 The webinterface is proven to work with Chrome and Chromium Edge.
 
